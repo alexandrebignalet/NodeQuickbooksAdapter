@@ -19,7 +19,8 @@ gulp.task('babel', () =>
 )
 
 gulp.task('watch', function() {
-    gulp.watch('scripts/*.js', ['babel']);
+    gulp.watch('scripts/*.js', ['babel'])
 })
 
-gulp.task('default', ['babel', 'webserver', 'watch']);
+gulp.task('dev', ['babel', 'webserver', 'watch'])
+gulp.task('prod', ['babel', 'webserver'])
