@@ -6,8 +6,8 @@ import PlatformClient       from './platform-client'
 import io                   from '../socket-io.service'
 
 io.on('connection', () => {
-    if (!PlatformClient.hasClient()){
-        return io.emit('quickbooks_not_available');
+    if (!(OAuthInfoProvider.accessToken && OAuthInfoProvider.accessTokenSecret )){
+        return io.emit('quickbooks_not_available')
     }
     io.emit('quickbooks_available')
 })
@@ -25,25 +25,27 @@ function quickBooksMiddleware (req, res, next) {
     const consumerKey = req.headers['consumer-key']
     const consumerSecret = req.headers['consumer-secret']
 
-    OAuthInfoProvider.init(consumerKey, consumerSecret)
+    if ( OAuthInfoProvider.authenticatedRemembered({consumerKey, consumerSecret}) ){
+        PlatformClient.createQBOClient(
+            OAuthInfoProvider.consumerKey,
+            OAuthInfoProvider.consumerSecret,
+            OAuthInfoProvider.accessToken,
+            OAuthInfoProvider.accessTokenSecret,
+            OAuthInfoProvider.realmId
+        )
 
-    if (!PlatformClient.hasClient()) {
-        if ( req.url.includes('connection') || req.url.includes('auth')) {
-            return next()
-        }
+        return next()
+    } else {
+        OAuthInfoProvider.consumerKey = consumerKey
+        OAuthInfoProvider.consumerSecret = consumerSecret
 
-        if (OAuthInfoProvider.accessToken && OAuthInfoProvider.accessTokenSecret) {
-
-            PlatformClient.createQBOClient(
-                OAuthInfoProvider.consumerKey,
-                OAuthInfoProvider.consumerSecret,
-                OAuthInfoProvider.accessToken,
-                OAuthInfoProvider.accessTokenSecret,
-                OAuthInfoProvider.realmId
-            )
-            return next()
-        }
+        io.emit('quickbooks_not_available')
     }
+
+    if ( req.url.includes('auth')) {
+        return next()
+    }
+
     next()
 }
 

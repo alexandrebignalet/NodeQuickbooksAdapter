@@ -39,12 +39,10 @@
         });
 
         on('quickbooks_available', function () {
-            console.log('1');
             AuthQuickbooksProvider.setAvailable(true);
         });
 
         on('quickbooks_not_available', function () {
-            console.log('2');
             AuthQuickbooksProvider.setAvailable(false);
         });
 

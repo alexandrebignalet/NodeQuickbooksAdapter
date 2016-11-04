@@ -1,22 +1,34 @@
 'use strict'
 
+import fs from 'fs'
 
 class OAuthInfoProvider{
     constructor(){
-        this._consumerKey = null
-        this._consumerSecret = null
-        this._realmId = null
+        const storedAuthInfo = JSON.parse(fs.readFileSync(__dirname + "/../access_tokens.json"))
 
+        this._consumerKey = storedAuthInfo.consumerKey
+        this._consumerSecret = storedAuthInfo.consumerSecret
+        this._realmId = storedAuthInfo.realmId
+        this._accessToken = storedAuthInfo.accessToken
+        this._accessTokenSecret = storedAuthInfo.accessTokenSecret
         this._requestToken = null
         this._requestTokenSecret = null
-
-        this._accessToken = null
-        this._accessTokenSecret = null
     }
 
-    init (consumerKey, consumerSecret) {
-        this._consumerKey = consumerKey
-        this._consumerSecret = consumerSecret
+    authenticatedRemembered ({consumerKey, consumerSecret}) {
+        return this._consumerKey === consumerKey &&
+                this._consumerSecret === consumerSecret &&
+                this._accessToken !== null &&
+                this._accessTokenSecret !== null &&
+                this._realmId !== null
+    }
+
+    set consumerKey (key) {
+        this._consumerKey = key
+    }
+
+    set consumerSecret (key) {
+        this._consumerSecret = key
     }
 
     get consumerKey () {
@@ -44,17 +56,27 @@ class OAuthInfoProvider{
         this._requestTokenSecret = requestTokenSecret
     }
 
-    setAccessToken ({ oauth_token_secret, oauth_token}) {
-        this._accessTokenSecret = oauth_token_secret
-        this._accessToken = oauth_token
-    }
-
     get accessToken () {
         return this._accessToken
     }
 
     get accessTokenSecret () {
         return this._accessTokenSecret
+    }
+
+    setAccessTokens ({oauth_token, oauth_token_secret}) {
+        this._accessToken = oauth_token
+        this._accessTokenSecret = oauth_token_secret
+    }
+
+    stringifyAuthInfo(){
+        return JSON.stringify({
+            consumerKey: this.consumerKey,
+            consumerSecret: this.consumerSecret,
+            accessToken: this.accessToken,
+            accessTokenSecret: this.accessTokenSecret,
+            realmId: this.realmId
+        })
     }
 }
 

@@ -16,7 +16,14 @@ const router = express.Router()
  *
  * [{"field": "TxnDate", "value": "2016-10-01", "operator": ">"},
  *  {"field": "TxnDate", "value": "2016-10-31", "operator": "<"},
- *  {"field": "limit", "value": "5"}}
+ *  {"field": "limit", "value": "5"}]
+ *
+ *  Pass filters in query string. Each object in a query param
+ *  Query String Parameters:
+ *      1: {"field": "TxnDate", "value": "2016-10-01", "operator": ">"}
+ *      2: {"field": "TxnDate", "value": "2016-10-31", "operator": "<"}
+ *      3: {"field": "limit", "value": "5"}
+ *
  *
  */
 router.get('/:entityAlias/', (req, res) => {
@@ -27,10 +34,10 @@ router.get('/:entityAlias/', (req, res) => {
     }
 
     const controller = new EntityQuickbooksHandler(entityAlias)
-
+// return res.send(req.query)
     return controller.find(queryBuilder(req.query))
         .then( (response) => {
-            return res.send({
+            return res.status(200).send({
                 [entityAlias+'s']: response,
                 count: response.length
             })
@@ -53,7 +60,7 @@ router.get('/:entityAlias/:id', (req, res) => {
 
     return controller.get(id)
         .then( (response) => {
-            return res.send(response)
+            return res.status(200).send(response)
         })
         .catch((e) => {
             return QuickbooksErrorHandler(res, e)
@@ -75,7 +82,7 @@ router.patch('/:entityAlias/:id', (req, res) => {
 
     return controller.update(id, patch)
         .then( (response) => {
-            return res.send(response)
+            return res.status(200).send(response)
         })
         .catch((e) => {
             return QuickbooksErrorHandler(res, e)
@@ -94,7 +101,7 @@ router.delete('/:entityAlias/:id', (req, res) => {
 
     return controller.remove(id)
         .then( (response) => {
-            return res.send(response)
+            return res.status(200).send(response)
         })
         .catch((e) => {
             return QuickbooksErrorHandler(res, e)

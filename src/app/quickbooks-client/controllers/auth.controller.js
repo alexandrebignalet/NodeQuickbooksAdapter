@@ -4,7 +4,7 @@
 import express from 'express'
 import request from 'request'
 import qs      from 'querystring'
-
+import fs      from 'fs'
 
 import OAuthInfoProvider from '../auth/auth-info.provider'
 import PlatformClient from '../platform-client'
@@ -32,7 +32,7 @@ router.get('/requestToken', (req, res) => {
 
         res.status(200).send(PlatformClient.APP_CENTER_URL + requestToken.oauth_token);
     }).on('error', (error) => {
-        console.error(error)
+        res.status(500).send({code:500, message:error});
     })
 });
 
@@ -57,10 +57,12 @@ router.get('/connection', (req, res) => {
     request.post(postBody, (e, r, data) => {
         const accessToken = qs.parse(data);
 
-        OAuthInfoProvider.setAccessToken(accessToken)
+        OAuthInfoProvider.setAccessTokens(accessToken)
+        fs.writeFileSync(__dirname + "/../access_tokens.json", OAuthInfoProvider.stringifyAuthInfo())
+
         io.emit('quickbooks_authentication_success')
     }).on('error', (error) => {
-        console.error(error);
+        res.status(500).send({code:500, message:error});
     })
 });
 

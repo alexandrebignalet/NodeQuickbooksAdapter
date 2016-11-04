@@ -25,13 +25,13 @@ router.get('/:entityAlias/:id/pdf', (req, res) => {
     return controller.getPdf(id)
         .then( (response) => {
             res.contentType('application/pdf')
-            return res.send(response)
+            return res.status(200).send(response)
         })
-        .catch((e) => {
-            if (e.Fault){
-                return res.send({code:404, message:entityAlias+' not found'})
+        .catch((error) => {
+            if (error.Fault){
+                return res.status(404).send({code:404, message:entityAlias+' not found'})
             }
-            return res.send(e)
+            return res.status(500).send({code:500, message:error})
         })
 })
 
@@ -51,11 +51,11 @@ router.get('/:entityAlias/:id/sendTo/:email', (req, res) => {
         .then( (response) => {
             return res.send(response)
         })
-        .catch((e) => {
-            if (e.Fault){
-                return res.send({code:404, message:entityAlias+' not found'})
+        .catch((error) => {
+            if (error.Fault){
+                return res.status(404).send({code:404, message:entityAlias+' not found'})
             }
-            return res.send(e)
+            return res.status(500).send({code:500, message:error})
         })
 })
 

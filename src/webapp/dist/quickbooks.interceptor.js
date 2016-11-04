@@ -24,11 +24,22 @@
             }
 
             if (!NodeSocket.isConnected()) {
-                return $q.reject({ code: 404, message: 'You must switch on Node Server.' });
+                var _response = {
+                    status: 404,
+                    data: 'You must switch on Node Server.',
+                    config: { url: config.url }
+                };
+
+                return $q.reject(_response);
             }
 
             if (!AuthQuickbooksProvider.hasAuthInfo()) {
-                return $q.reject({ code: 401, message: 'Login before using api' });
+                var _response2 = {
+                    status: 401,
+                    data: 'Login before using api.',
+                    config: { url: config.url }
+                };
+                return $q.reject(_response2);
             }
 
             config.headers = AuthQuickbooksProvider.getHeaders();
@@ -41,6 +52,11 @@
         }
 
         function response(response) {
+
+            if (!response.config) {
+                return response;
+            }
+
             if (!response.config.url.includes(NODE_API_BASE_URL) || AuthQuickbooksProvider.isAvailable()) {
                 return response;
             }

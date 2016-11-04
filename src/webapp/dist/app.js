@@ -3,7 +3,7 @@
 (function () {
     'use strict';
 
-    angular.module('exampleApp', ['btford.socket-io']).run(run);
+    angular.module('exampleApp', ['btford.socket-io', 'ngResource']).run(run);
 
     run.$inject = [];
 

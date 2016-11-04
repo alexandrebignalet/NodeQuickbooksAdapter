@@ -5,10 +5,10 @@
 
     angular.module('exampleApp').controller('EntityController', EntityController);
 
-    EntityController.$inject = ['EntityFactory', 'AuthQuickbooksProvider'];
+    EntityController.$inject = ['EntityFactory', 'AuthQuickbooksProvider', '$q'];
 
     /* @ngInject */
-    function EntityController(EntityFactory, AuthQuickbooksProvider) {
+    function EntityController(EntityFactory, AuthQuickbooksProvider, $q) {
         var vm = this;
         vm.title = 'EntityController';
 
@@ -22,14 +22,27 @@
         vm.entity = null;
         vm.load = load;
         vm.saveCredentials = saveCredentials;
+        vm.queryInvoicesByDates = queryInvoicesByDates;
 
         ////////////////
 
         function load(entityAlias, id) {
-            EntityFactory.get(entityAlias, id).then(function (entity) {
+            EntityFactory.get({ entityAlias: entityAlias, id: id }).$promise.then(function (entity) {
                 vm.entity = entity;
-            }).catch(function (err) {
-                console.log(err);
+            }).catch(function (e) {
+                vm.entity = null;
+            });
+        }
+
+        function queryInvoicesByDates(entityAlias) {
+            EntityFactory.get({
+                entityAlias: entityAlias,
+                "1": { "field": "TxnDate", "value": "2016-10-01", "operator": ">" },
+                "2": { "field": "TxnDate", "value": "2016-10-31", "operator": "<" },
+                "3": { "field": "limit", "value": "5" }
+            }).$promise.then(function (entities) {
+                vm.entity = entities;
+            }).catch(function () {
                 vm.entity = null;
             });
         }

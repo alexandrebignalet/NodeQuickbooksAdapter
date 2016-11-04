@@ -39,12 +39,10 @@
         })
 
         on('quickbooks_available', () => {
-            console.log('1')
             AuthQuickbooksProvider.setAvailable(true)
         })
 
         on('quickbooks_not_available', () => {
-            console.log('2')
             AuthQuickbooksProvider.setAvailable(false)
         })
 
