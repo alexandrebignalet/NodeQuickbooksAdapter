@@ -1,0 +1,41 @@
+<html>
+    <body ng-app="exampleApp" ng-controller="EntityController as vm">
+        <hr>
+        <div>
+            <input type="text" ng-model="vm.authInfo.appToken" placeholder="AppToken"/>
+            <input type="text" ng-model="vm.authInfo.consumerKey" placeholder="consumerKey"/>
+            <input type="text" ng-model="vm.authInfo.consumerSecret" placeholder="consumerSecret"/>
+            <input type="text" ng-model="vm.authInfo.realmId" placeholder="realmId"/>
+            <button ng-click="vm.saveCredentials(vm.authInfo)">Save Credentials</button>
+        </div>
+        <hr>
+        <div>
+            <h1>Quickbooks API Explorer</h1>
+            <connection-accounting></connection-accounting>
+        </div>
+        <hr>
+        <div>
+            <input type="number" ng-model="vm.id" placeholder="id"/>
+            <input type="text" ng-model="vm.entityAlias" placeholder="entity alias"/>
+            <button ng-click="vm.load(vm.entityAlias, vm.id)">GET {{vm.id}} {{vm.entityAlias}} from Quickbooks</button>
+        </div>
+        <div>
+            <blockquote>
+                {{vm.entity}}
+            </blockquote>
+        </div>
+
+        <script src="./socket.io-client/socket.io.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script src="./angular-socket-io/socket.min.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="scripts/app.constants.js"></script>
+        <script src="scripts/http.config.js"></script>
+        <script src="scripts/auth-quickbooks.service.js"></script>
+        <script src="scripts/quickbooks.interceptor.js"></script>
+        <script src="scripts/connection-quickbooks.component.js"></script>
+        <script src="scripts/entity.service.js"></script>
+        <script src="scripts/entity.controller.js"></script>
+        <script src="scripts/node-socket.service.js"></script>
+    </body>
+</html>

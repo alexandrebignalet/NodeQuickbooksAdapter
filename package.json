@@ -1,0 +1,35 @@
+{
+  "name": "node-server",
+  "version": "1.0.0",
+  "description": "Datatool NodeJS Quickbooks/Chat Client",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon src/app/server.js dev --exec babel-node --presets es2015,stage-2",
+    "build": "babel ./src/app -d ./src/dist --presets es2015,stage-2",
+    "serve": "node ./src/dist/server.js prod"
+  },
+  "author": "Alexandre BIGNALET",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^7.1.9",
+    "morgan": "^1.7.0",
+    "node-quickbooks": "https://github.com/mcohen01/node-quickbooks.git",
+    "querystring": "^0.2.0",
+    "request": "^2.75.0",
+    "socket.io": "^1.5.1",
+    "babel-cli": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-2": "^6.17.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "angular-socket-io": "^0.7.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-connect": "^5.0.0",
+    "gulp-watch": "^4.3.10",
+    "nodemon": "^1.11.0"
+  }
+}

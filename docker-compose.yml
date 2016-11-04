@@ -1,0 +1,15 @@
+node-server:
+  build: .
+  dockerfile: ./docker/Dockerfile_node-server
+  volumes:
+    - "./:/usr/src/data-engine-node-server"
+  ports:
+    - "3000:8080"
+    - "3001:8081"
+nginx:
+  build: .
+  dockerfile: ./docker/Dockerfile_nginx
+  links:
+      - node
+  ports:
+      - "8000:80" # "HOST_PORT:CONTAINER_PORT"
