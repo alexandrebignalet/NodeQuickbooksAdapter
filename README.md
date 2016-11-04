@@ -1,4 +1,4 @@
-# NodeQuickbooksAdapter
+# NodeSocket
 
 ### Setup
 
