@@ -18,9 +18,7 @@ router.use((req, res, next) => {
         'content-type, ' +
         'Access-Control-Allow-Origin' +
         'consumer-key' +
-        'consumer-secret' +
-        'app-token' +
-        'realm-id');
+        'consumer-secret');
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
