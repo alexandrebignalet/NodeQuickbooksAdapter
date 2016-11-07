@@ -19,7 +19,7 @@ var router = _express2.default.Router();
 // Middleware add headers
 router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', _config2.default.env.url);
-    res.setHeader('Access-Control-Allow-Headers', 'X-Auth-Token,' + 'content-type, ' + 'Access-Control-Allow-Origin' + 'consumer-key' + 'consumer-secret' + 'app-token' + 'realm-id');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Auth-Token,' + 'content-type, ' + 'Access-Control-Allow-Origin' + 'consumer-key' + 'consumer-secret');
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });

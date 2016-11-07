@@ -36,6 +36,28 @@ router.get('/requestToken', (req, res) => {
     })
 });
 
+router.get('/requestTokenWithExpiration', (req, res) => {
+
+    const postBody = {
+        url: 'https://appcenter.intuit.com/Playground/OAuth/BeginIAFlow',
+        oauth: {
+            callback:        PlatformClient.CALLBACK_URL,
+            consumer_key:    OAuthInfoProvider.consumerKey,
+            consumer_secret: OAuthInfoProvider.consumerSecret
+        }
+    };
+
+    request.post(postBody, (error, response, data) => {
+        const requestToken = qs.parse(data);
+
+        OAuthInfoProvider.setRequestToken(requestToken.oauth_token, requestToken.oauth_token_secret)
+
+        res.status(200).send(PlatformClient.APP_CENTER_URL + requestToken.oauth_token);
+    }).on('error', (error) => {
+        res.status(500).send({code:500, message:error});
+    })
+});
+
 router.get('/connection', (req, res) => {
 
     OAuthInfoProvider.realmId = req.query.realmId
@@ -58,7 +80,7 @@ router.get('/connection', (req, res) => {
         const accessToken = qs.parse(data);
 
         OAuthInfoProvider.setAccessTokens(accessToken)
-        fs.writeFileSync(__dirname + "/../access_tokens.json", OAuthInfoProvider.stringifyAuthInfo())
+        fs.writeFileSync(__dirname + "/../../../access_tokens.json", OAuthInfoProvider.stringifyAuthInfo())
 
         io.emit('quickbooks_authentication_success')
     }).on('error', (error) => {

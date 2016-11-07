@@ -5,9 +5,9 @@
         .module('exampleApp')
         .factory('quickBooksErrorHandlerInterceptor', quickBooksErrorHandlerInterceptor);
 
-    quickBooksErrorHandlerInterceptor.$inject = ['NODE_API_BASE_URL', '$q'];
+    quickBooksErrorHandlerInterceptor.$inject = ['NODE_API_BASE_URL', '$q', 'AuthQuickbooksProvider'];
 
-    function quickBooksErrorHandlerInterceptor (NODE_API_BASE_URL, $q) {
+    function quickBooksErrorHandlerInterceptor (NODE_API_BASE_URL, $q, AuthQuickbooksProvider) {
 
         const service = {
             responseError: responseError
@@ -25,6 +25,7 @@
 
             switch (response.status) {
                 case 401:
+                    AuthQuickbooksProvider.setAvailable(false)
                     console.log('401 error', response)
                     break;
                 case 400:

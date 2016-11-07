@@ -15,7 +15,7 @@ var _socketIo2 = _interopRequireDefault(_socketIo);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _socketIo2.default.on('connection', function () {
-    if (!_platformClient2.default.hasClient()) {
+    if (!(_authInfo2.default.accessToken && _authInfo2.default.accessTokenSecret)) {
         return _socketIo2.default.emit('quickbooks_not_available');
     }
     _socketIo2.default.emit('quickbooks_available');
@@ -34,19 +34,21 @@ function quickBooksMiddleware(req, res, next) {
     var consumerKey = req.headers['consumer-key'];
     var consumerSecret = req.headers['consumer-secret'];
 
-    _authInfo2.default.init(consumerKey, consumerSecret);
+    if (_authInfo2.default.authenticatedRemembered({ consumerKey: consumerKey, consumerSecret: consumerSecret })) {
+        _platformClient2.default.createQBOClient(_authInfo2.default.consumerKey, _authInfo2.default.consumerSecret, _authInfo2.default.accessToken, _authInfo2.default.accessTokenSecret, _authInfo2.default.realmId);
 
-    if (!_platformClient2.default.hasClient()) {
-        if (req.url.includes('connection') || req.url.includes('auth')) {
-            return next();
-        }
+        return next();
+    } else {
+        _authInfo2.default.consumerKey = consumerKey;
+        _authInfo2.default.consumerSecret = consumerSecret;
 
-        if (_authInfo2.default.accessToken && _authInfo2.default.accessTokenSecret) {
-
-            _platformClient2.default.createQBOClient(_authInfo2.default.consumerKey, _authInfo2.default.consumerSecret, _authInfo2.default.accessToken, _authInfo2.default.accessTokenSecret, _authInfo2.default.realmId);
-            return next();
-        }
+        _socketIo2.default.emit('quickbooks_not_available');
     }
+
+    if (req.url.includes('auth')) {
+        return next();
+    }
+
     next();
 }
 

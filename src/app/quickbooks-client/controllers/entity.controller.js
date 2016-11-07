@@ -6,10 +6,10 @@ import express from 'express'
 
 import quickbooksStates   from '../entities.state'
 import EntityQuickbooksHandler   from '../handlers/document.entity.handler'
-
+import ErrorHandler from "../handlers/error.handler"
+import AuthInfoProvider from "../auth/auth-info.provider"
 
 const router = express.Router()
-
 
 /*
  * Input example:
@@ -34,7 +34,7 @@ router.get('/:entityAlias/', (req, res) => {
     }
 
     const controller = new EntityQuickbooksHandler(entityAlias)
-// return res.send(req.query)
+
     return controller.find(queryBuilder(req.query))
         .then( (response) => {
             return res.status(200).send({
@@ -42,8 +42,9 @@ router.get('/:entityAlias/', (req, res) => {
                 count: response.length
             })
         })
-        .catch((e) => {
-            return QuickbooksErrorHandler(res, e)
+        .catch((error) => {
+            let errorHandler = new ErrorHandler(res.statusCode, error)
+            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
         })
 });
 
@@ -62,8 +63,10 @@ router.get('/:entityAlias/:id', (req, res) => {
         .then( (response) => {
             return res.status(200).send(response)
         })
-        .catch((e) => {
-            return QuickbooksErrorHandler(res, e)
+        .catch((error) => {
+            let errorHandler = new ErrorHandler(res.statusCode, error)
+            console.log(error)
+            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
         })
 })
 
@@ -84,8 +87,9 @@ router.patch('/:entityAlias/:id', (req, res) => {
         .then( (response) => {
             return res.status(200).send(response)
         })
-        .catch((e) => {
-            return QuickbooksErrorHandler(res, e)
+        .catch((error) => {
+            let errorHandler = new ErrorHandler(res.statusCode, error)
+            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
         })
 })
 
@@ -103,8 +107,9 @@ router.delete('/:entityAlias/:id', (req, res) => {
         .then( (response) => {
             return res.status(200).send(response)
         })
-        .catch((e) => {
-            return QuickbooksErrorHandler(res, e)
+        .catch((error) => {
+            let errorHandler = new ErrorHandler(res.statusCode, error)
+            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
         })
 })
 
@@ -116,21 +121,6 @@ function entityAliasValidator(entityAlias, methodName){
 
 function EntityAliasException (response, entityAlias, methodName) {
     return response.status(400).send({code:400, message: 'Impossible to '+methodName+' entity '+entityAlias})
-}
-
-function QuickbooksErrorHandler (response, error){
-    var message = {
-        code: 404,
-        message: error
-    };
-
-    if (error.Fault){
-        if(error.Fault.type){
-            message.code = 400
-            message.message = error.Fault.Error
-        }
-    }
-    return response.status(message.code).type('json').send(message)
 }
 
 function queryBuilder(queryRequest){

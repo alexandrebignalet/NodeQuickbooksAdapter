@@ -29,12 +29,12 @@ router.get('/:entityAlias/:id/pdf', function (req, res) {
 
     return controller.getPdf(id).then(function (response) {
         res.contentType('application/pdf');
-        return res.send(response);
-    }).catch(function (e) {
-        if (e.Fault) {
-            return res.send({ code: 404, message: entityAlias + ' not found' });
+        return res.status(200).send(response);
+    }).catch(function (error) {
+        if (error.Fault) {
+            return res.status(404).send({ code: 404, message: entityAlias + ' not found' });
         }
-        return res.send(e);
+        return res.status(500).send({ code: 500, message: error });
     });
 });
 
@@ -52,11 +52,11 @@ router.get('/:entityAlias/:id/sendTo/:email', function (req, res) {
 
     return controller.send(id, email).then(function (response) {
         return res.send(response);
-    }).catch(function (e) {
-        if (e.Fault) {
-            return res.send({ code: 404, message: entityAlias + ' not found' });
+    }).catch(function (error) {
+        if (error.Fault) {
+            return res.status(404).send({ code: 404, message: entityAlias + ' not found' });
         }
-        return res.send(e);
+        return res.status(500).send({ code: 500, message: error });
     });
 });
 

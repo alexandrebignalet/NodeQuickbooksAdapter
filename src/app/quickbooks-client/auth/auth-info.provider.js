@@ -4,13 +4,14 @@ import fs from 'fs'
 
 class OAuthInfoProvider{
     constructor(){
-        const storedAuthInfo = JSON.parse(fs.readFileSync(__dirname + "/../access_tokens.json"))
+        const storedAuthInfo = getAuthInfoFromFile()
 
         this._consumerKey = storedAuthInfo.consumerKey
         this._consumerSecret = storedAuthInfo.consumerSecret
         this._realmId = storedAuthInfo.realmId
         this._accessToken = storedAuthInfo.accessToken
         this._accessTokenSecret = storedAuthInfo.accessTokenSecret
+        
         this._requestToken = null
         this._requestTokenSecret = null
     }
@@ -80,5 +81,23 @@ class OAuthInfoProvider{
     }
 }
 
-
 module.exports = new OAuthInfoProvider()
+
+function getAuthInfoFromFile () {
+    let storedAuthInfo;
+
+    try {
+        storedAuthInfo = JSON.parse(fs.readFileSync(__dirname + "/../../../access_tokens.json"))
+    } catch (e) {
+        console.log('Impossible to read: ', __dirname + "/../../../access_tokens.json")
+        storedAuthInfo = {
+            consumerKey: null,
+            consumerSecret: null,
+            realmId: null,
+            accessToken: null,
+            accessTokenSecret: null
+        }
+    }
+    
+    return storedAuthInfo
+}
