@@ -67,6 +67,29 @@ router.get('/:entityAlias/:id', (req, res) => {
         })
 })
 
+router.post('/:entityAlias', (req, res) => {
+    let entityAlias = req.params.entityAlias
+
+    if (!entityAliasValidator(entityAlias, 'create')){
+        return EntityAliasException(res, entityAlias, 'create')
+    }
+
+    const controller = new EntityQuickbooksHandler(entityAlias)
+
+    const id    = req.params.id
+    const post  = req.body
+
+
+    return controller.create(post)
+        .then( (response) => {
+            return res.status(200).send(response)
+        })
+        .catch((error) => {
+            let errorHandler = new ErrorHandler(res.statusCode, error)
+            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
+        })
+})
+
 router.patch('/:entityAlias/:id', (req, res) => {
     let entityAlias = req.params.entityAlias
 
