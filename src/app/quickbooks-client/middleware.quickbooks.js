@@ -14,7 +14,7 @@ io.on('connection', () => {
 
 function quickBooksMiddleware (req, res, next) {
 
-    if ( req.url.includes('connection')) {
+    if ( req.url.length > 1 && req.url.includes('connection')) {
         return next()
     }
 

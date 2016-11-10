@@ -37,10 +37,7 @@ router.get('/:entityAlias/', (req, res) => {
 
     return controller.find(queryBuilder(req.query))
         .then( (response) => {
-            return res.status(200).send({
-                [entityAlias+'s']: response,
-                count: response.length
-            })
+            return res.status(200).send(response)
         })
         .catch((error) => {
             let errorHandler = new ErrorHandler(res.statusCode, error)

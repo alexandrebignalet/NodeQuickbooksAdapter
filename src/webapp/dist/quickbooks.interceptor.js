@@ -35,8 +35,8 @@
 
             if (!AuthQuickbooksProvider.hasAuthInfo()) {
                 var _response2 = {
-                    status: 401,
-                    data: 'Login before using api.',
+                    status: 400,
+                    data: 'Set credentials before using api.',
                     config: { url: config.url }
                 };
                 return $q.reject(_response2);
