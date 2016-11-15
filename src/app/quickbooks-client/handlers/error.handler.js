@@ -55,6 +55,7 @@ const QUICKBOOKS_ERROR_TYPE = [
 
 
 function identifyErrorFormatType (statusCode, error){
+    console.log(error)
     if (statusCode === 200 && !error.Fault) {
         return XML_FORMAT
     }

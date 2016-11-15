@@ -82,7 +82,7 @@ router.post('/:entityAlias', (req, res) => {
 
     return controller.create(post)
         .then( (response) => {
-            return res.status(200).send(response)
+            return res.status(201).send(response)
         })
         .catch((error) => {
             let errorHandler = new ErrorHandler(res.statusCode, error)
