@@ -7,7 +7,6 @@ import express from 'express'
 import quickbooksStates   from '../entities.state'
 import EntityQuickbooksHandler   from '../handlers/document.entity.handler'
 import ErrorHandler from "../handlers/error.handler"
-import AuthInfoProvider from "../auth/auth-info.provider"
 
 const router = express.Router()
 
