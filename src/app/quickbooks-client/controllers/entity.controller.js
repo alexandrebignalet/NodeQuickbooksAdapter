@@ -40,7 +40,8 @@ router.get('/:entityAlias/', (req, res) => {
         })
         .catch((error) => {
             let errorHandler = new ErrorHandler(res.statusCode, error)
-            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
+            return res.status(errorHandler.code).type('json')
+                .send({code:errorHandler.code, message: errorHandler.message, type: errorHandler.type})
         })
 });
 
@@ -62,7 +63,8 @@ router.get('/:entityAlias/:id', (req, res) => {
         .catch((error) => {
             let errorHandler = new ErrorHandler(res.statusCode, error)
             console.log(error)
-            return res.status(errorHandler.code).type('json').send({code:errorHandler.code, message: errorHandler.message})
+            return res.status(errorHandler.code).type('json')
+                .send({code:errorHandler.code, message: errorHandler.message, type: errorHandler.type})
         })
 })
 
